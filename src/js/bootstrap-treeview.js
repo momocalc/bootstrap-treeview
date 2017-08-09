@@ -1217,39 +1217,68 @@
 	};
 
     /**
-	 * Move a node
+     * Move a node
      * @param {Object} target_elem - target node's list element
      * @param {Object} to_elem - bound for element ...
      * @param {String} pos - 'above'/'below': target_elem will be moved to 'above/below' of to_elem. 'child' target_elem will be added to_elem'snodes.
+     * @return {String} target could moved - 'success': moved , 'failed': failed to move
      */
     Tree.prototype.moveNode = function (target_elem, to_elem, pos) {
-        var _this =this;
-        function get_parent_nodes(e){
-            var parent = _this.getParent(e);
-            return parent?parent.nodes:_this.tree;
-        }
+        var _this = this;
         var target_node = this.findNode(target_elem);
-        var from_nodes = get_parent_nodes(target_elem);
-        from_nodes.splice(from_nodes.indexOf(target_node),1);
-
         var to_base_node = this.findNode(to_elem);
-        var to_nodes = get_parent_nodes(to_base_node);
+        var SUCCESS = 'success';
+        var FAILED = 'failed';
+
+        function is_child(parent, node) {
+            var p = _this.getParent(node);
+            while (p) {
+                if (p === parent) {
+                    return true;
+                }
+                p = _this.getParent(p);
+            }
+            return false;
+        }
+
+        function set_parent(node, parent) {
+            node.parentId = parent ? parent.nodeId : undefined;
+        }
+
+        if (is_child(target_node, to_base_node)) {
+            console.log("Error: can't move to child");
+            return FAILED;
+        }
+
+        var target_parent = this.getParent(target_node);
+        var target_parent_nodes = target_parent ? target_parent.nodes : _this.tree;
+        target_parent_nodes.splice(target_parent_nodes.indexOf(target_node), 1);
+        if (target_parent_nodes.length === 0) {
+            target_parent.nodes = null;
+        }
+
+        var to_base_parent = this.getParent(to_base_node);
+        var to_nodes = to_base_parent ? to_base_parent.nodes : _this.tree;
+
         var idx = to_nodes.indexOf(to_base_node);
 
         if (pos === 'above') {
-            to_nodes.splice(idx,0,target_node);
+            to_nodes.splice(idx, 0, target_node);
+            set_parent(target_node, to_base_parent);
         } else if (pos === 'below') {
-            to_nodes.splice(idx+1,0,target_node);
+            to_nodes.splice(idx + 1, 0, target_node);
+            set_parent(target_node, to_base_parent);
         } else if (pos === 'child') {
             //child
-            if(!to_base_node.nodes){
-                to_base_node.nodes=[];
+            if (!to_base_node.nodes) {
+                to_base_node.nodes = [];
             }
             to_base_node.nodes.push(target_node);
+            set_parent(target_node, to_base_node);
         }
         this.render();
+        return SUCCESS;
     };
-
 
 	var logError = function (message) {
 		if (window.console) {
