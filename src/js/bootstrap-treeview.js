@@ -17,6 +17,10 @@
  * limitations under the License.
  * ========================================================= */
 
+/*
+   @momocalc added method "moveNode", add event "treeRendered" August 9, 2017
+ */
+
 ;(function ($, window, document, undefined) {
 
 	/*global jQuery, console*/
