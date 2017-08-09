@@ -69,7 +69,8 @@
 		onNodeUnchecked: undefined,
 		onNodeUnselected: undefined,
 		onSearchComplete: undefined,
-		onSearchCleared: undefined
+		onSearchCleared: undefined,
+        onTreeRendered: undefined
 	};
 
 	_default.options = {
@@ -201,6 +202,7 @@
 		this.$element.off('nodeUnselected');
 		this.$element.off('searchComplete');
 		this.$element.off('searchCleared');
+        this.$element.off('treeRendered');
 	};
 
 	Tree.prototype.subscribeEvents = function () {
@@ -248,6 +250,9 @@
 		if (typeof (this.options.onSearchCleared) === 'function') {
 			this.$element.on('searchCleared', this.options.onSearchCleared);
 		}
+        if (typeof (this.options.onTreeRendered) === 'function') {
+            this.$element.on('treeRendered', this.options.onTreeRendered);
+        }
 	};
 
 	/*
@@ -501,6 +506,8 @@
 
 		// Build tree
 		this.buildTree(this.tree, 0);
+
+        this.$element.trigger('treeRendered');
 	};
 
 	// Starting from the root node, and recursing down the
