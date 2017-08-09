@@ -142,7 +142,9 @@
 
 			// Search methods
 			search: $.proxy(this.search, this),
-			clearSearch: $.proxy(this.clearSearch, this)
+			clearSearch: $.proxy(this.clearSearch, this),
+
+            moveNode: $.proxy(this.moveNode, this)
 		};
 	};
 
@@ -1206,6 +1208,41 @@
 			}
 		}
 	};
+
+    /**
+	 * Move a node
+     * @param {Object} target_elem - target node's list element
+     * @param {Object} to_elem - bound for element ...
+     * @param {String} pos - 'above'/'below': target_elem will be moved to 'above/below' of to_elem. 'child' target_elem will be added to_elem'snodes.
+     */
+    Tree.prototype.moveNode = function (target_elem, to_elem, pos) {
+        var _this =this;
+        function get_parent_nodes(e){
+            var parent = _this.getParent(e);
+            return parent?parent.nodes:_this.tree;
+        }
+        var target_node = this.findNode(target_elem);
+        var from_nodes = get_parent_nodes(target_elem);
+        from_nodes.splice(from_nodes.indexOf(target_node),1);
+
+        var to_base_node = this.findNode(to_elem);
+        var to_nodes = get_parent_nodes(to_base_node);
+        var idx = to_nodes.indexOf(to_base_node);
+
+        if (pos === 'above') {
+            to_nodes.splice(idx,0,target_node);
+        } else if (pos === 'below') {
+            to_nodes.splice(idx+1,0,target_node);
+        } else if (pos === 'child') {
+            //child
+            if(!to_base_node.nodes){
+                to_base_node.nodes=[];
+            }
+            to_base_node.nodes.push(target_node);
+        }
+        this.render();
+    };
+
 
 	var logError = function (message) {
 		if (window.console) {
