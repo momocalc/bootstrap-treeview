@@ -149,7 +149,8 @@
 			search: $.proxy(this.search, this),
 			clearSearch: $.proxy(this.clearSearch, this),
 
-            moveNode: $.proxy(this.moveNode, this)
+            moveNode: $.proxy(this.moveNode, this),
+			getTreeInfo: $.proxy(this.getTreeInfo,this)
 		};
 	};
 
@@ -1218,6 +1219,37 @@
 				return undefined;
 			}
 		}
+	};
+
+    /***
+	 * get tree info
+     * @returns {Array}
+     */
+    Tree.prototype.getTreeInfo = function(){
+        return this.buildTreeInfo(this.tree);
+    };
+
+    /***
+	 * Starting from the root node, and
+	 * recursing down the structure we build the tree one node at a time
+	 * a node's info contains {text, key, nodes}
+     * @param nodes - node lists
+     * @returns {Array} node's info list
+     */
+	Tree.prototype.buildTreeInfo = function(nodes){
+		var tree = [];
+		if(!nodes) return tree;
+		var _this = this;
+
+		nodes.forEach(function(_node){
+            var x = {'text':_node.text};
+            x.key = _node.key;
+            if(_node.nodes){
+                x.nodes=_this.buildTreeInfo(_node.nodes);
+            }
+            tree.push(x);
+		});
+		return tree;
 	};
 
     /**
