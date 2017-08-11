@@ -155,7 +155,8 @@
 			getTreeInfo: $.proxy(this.getTreeInfo,this),
 
 			// edit node
-			setText: $.proxy(this.setText, this)
+			setText: $.proxy(this.setText, this),
+			removeNode: $.proxy(this.removeNode, this)
 
 		};
 	};
@@ -1373,6 +1374,19 @@
             target_node.text = text;
         }
         this.render();
+    };
+
+    /***
+	 * remove a node
+     * @param node_id
+     */
+    Tree.prototype.removeNode = function (node_id) {
+        var target_node = this.nodes[node_id];
+        var parent_node = this.getParent(target_node);
+        var parent_nodes = parent_node ? parent_node.nodes : this.tree;
+        parent_nodes.splice(parent_nodes.indexOf(target_node), 1);
+        target_node.deleted = true;
+        this.render()
     };
 
 	var logError = function (message) {
