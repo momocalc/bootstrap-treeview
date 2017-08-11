@@ -18,7 +18,8 @@
  * ========================================================= */
 
 /*
-   @momocalc added method "moveNode", add event "treeRendered" August 9, 2017
+   @momocalc added method "moveNode", add event "treeRendered", August 9, 2017
+   @momocalc added method "getTreeInfo", add dropdown menu on node, August 10, 2017
  */
 
 ;(function ($, window, document, undefined) {
