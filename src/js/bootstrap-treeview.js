@@ -156,7 +156,8 @@
 
 			// edit node
 			setText: $.proxy(this.setText, this),
-			removeNode: $.proxy(this.removeNode, this)
+            removeNode: $.proxy(this.removeNode, this),
+            addNode: $.proxy(this.addNode, this)
 
 		};
 	};
@@ -1372,6 +1373,29 @@
         var target_node = this.nodes[node_id];
         if (target_node) {
             target_node.text = text;
+        }
+        this.render();
+    };
+
+    /**
+     * Add a new node
+     * @param new_node node object
+     * @param parent_id parent id of new node
+     */
+    Tree.prototype.addNode = function (new_node, parent_id) {
+        var new_nodes = [new_node];
+        if (parent_id !== undefined) {
+            var parent = this.nodes[parent_id];
+        }
+        this.setInitialStates({nodes: new_nodes}, 0);
+        if (parent) {
+            if (!parent.nodes) {
+                parent.nodes = new_nodes;
+            } else {
+                parent.nodes.push(new_node);
+            }
+        } else {
+            this.tree.push(new_node);
         }
         this.render();
     };
