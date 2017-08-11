@@ -335,6 +335,16 @@
 		if (!node || node.state.disabled) return;
 		
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
+
+        var isDropDownObj = false;
+        classList.forEach(function (v) {
+            if (v.startsWith('dropdown')) isDropDownObj = true;
+            if (v === 'caret') isDropDownObj = true;
+        });
+        if (isDropDownObj) {
+            return;
+        }
+
 		if ((classList.indexOf('expand-icon') !== -1)) {
 
 			this.toggleExpandedState(node, _default.options);
@@ -620,6 +630,35 @@
 				});
 			}
 
+            // Add dropdown
+            if (node.dropdown && !node.state.disabled) {
+                var dd = $(_this.template.dropdown);
+                treeItem.append(dd);
+                var ul = $(_this.template.dd_menu);
+                dd.append(ul);
+                $.each(node.dropdown, function addList(idx, val) {
+                    if (typeof val === 'string') {
+                        if (val === 'divider') {
+                            ul.append($(_this.template.dd_divider));
+                        }
+                    } else {
+                        var link = $(_this.template.dd_link).attr('href', val.href ? val.href : '#').append(val.text);
+                        //typeof (this.options.onNodeChecked) === 'function'
+                        if (typeof val.action === 'function') {
+                            link.click({
+                                node_text: node.text, node_key: node.key,
+                                item_text: val.text, item_key: val.key
+                            }, val.action);
+                        }
+                        var item = $(_this.template.dd_li).append(link);
+                        if (val.class) {
+                            item.attr('class', val.class);
+                        }
+                        ul.append(item);
+                    }
+                });
+            }
+
 			// Add item to the tree
 			_this.$wrapper.append(treeItem);
 
@@ -706,10 +745,16 @@
 		indent: '<span class="indent"></span>',
 		icon: '<span class="icon"></span>',
 		link: '<a href="#" style="color:inherit;"></a>',
-		badge: '<span class="badge"></span>'
+        badge: '<span class="badge"></span>',
+        dropdown: '<div class="dropdown pull-right"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a></div>',
+        dd_menu: '<ul class="dropdown-menu"></ul>',
+        dd_li: '<li></li>',
+        dd_link: '<a class="dropdown-item-link"></a>',
+        dd_divider: '<li class="divider"></li>'
 	};
 
-	Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}'
+    Tree.prototype.css = '.treeview .list-group-item{cursor:pointer}.treeview span.indent{margin-left:10px;margin-right:10px}.treeview span.icon{width:12px;margin-right:5px}.treeview .node-disabled{color:silver;cursor:not-allowed}';
+    Tree.prototype.css += '.treeview .dropdown .caret{border-width: 6px}';
 
 
 	/**
