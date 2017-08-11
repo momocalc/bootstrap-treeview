@@ -1306,6 +1306,8 @@
      * @return {String} target could moved - 'success': moved , 'failed': failed to move
      */
     Tree.prototype.moveNode = function (node_id, base_node_id, pos) {
+    	if(!pos){return;}
+
         var _this = this;
         var target_node = this.nodes[node_id];
         var base_node = this.nodes[base_node_id];
