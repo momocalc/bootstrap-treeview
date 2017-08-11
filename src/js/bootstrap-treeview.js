@@ -1385,10 +1385,13 @@
      */
     Tree.prototype.removeNode = function (node_id) {
         var target_node = this.nodes[node_id];
+        if(!target_node || target_node.removed){return;}
+        this.unselectNode(node_id);
+
         var parent_node = this.getParent(target_node);
         var parent_nodes = parent_node ? parent_node.nodes : this.tree;
         parent_nodes.splice(parent_nodes.indexOf(target_node), 1);
-        target_node.deleted = true;
+        target_node.removed = true;
         if (parent_nodes.length === 0) {
             parent_node.nodes = null;
         }
