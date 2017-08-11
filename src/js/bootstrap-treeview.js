@@ -150,8 +150,13 @@
 			search: $.proxy(this.search, this),
 			clearSearch: $.proxy(this.clearSearch, this),
 
+
             moveNode: $.proxy(this.moveNode, this),
-			getTreeInfo: $.proxy(this.getTreeInfo,this)
+			getTreeInfo: $.proxy(this.getTreeInfo,this),
+
+			// edit node
+			setText: $.proxy(this.setText, this)
+
 		};
 	};
 
@@ -1360,6 +1365,14 @@
         }
         this.render();
         return SUCCESS;
+    };
+
+    Tree.prototype.setText = function (node_id, text) {
+        var target_node = this.nodes[node_id];
+        if (target_node) {
+            target_node.text = text;
+        }
+        this.render();
     };
 
 	var logError = function (message) {
