@@ -150,8 +150,15 @@
 			search: $.proxy(this.search, this),
 			clearSearch: $.proxy(this.clearSearch, this),
 
+
             moveNode: $.proxy(this.moveNode, this),
-			getTreeInfo: $.proxy(this.getTreeInfo,this)
+			getTreeInfo: $.proxy(this.getTreeInfo,this),
+
+			// edit node
+			setText: $.proxy(this.setText, this),
+            removeNode: $.proxy(this.removeNode, this),
+            addNode: $.proxy(this.addNode, this)
+
 		};
 	};
 
@@ -1362,6 +1369,53 @@
         }
         this.render();
         return SUCCESS;
+    };
+
+    Tree.prototype.setText = function (node_id, text) {
+        var target_node = this.nodes[node_id];
+        if (target_node) {
+            target_node.text = text;
+        }
+        this.render();
+    };
+
+    /**
+     * Add a new node
+     * @param new_node node object
+     * @param parent_id parent id of new node
+     */
+    Tree.prototype.addNode = function (new_node, parent_id) {
+        var new_nodes = [new_node];
+        if (parent_id !== undefined) {
+            var parent = this.nodes[parent_id];
+        }
+        this.setInitialStates({nodes: new_nodes}, 0);
+        if (parent) {
+            if (!parent.nodes) {
+                parent.nodes = new_nodes;
+            } else {
+                parent.nodes.push(new_node);
+            }
+        } else {
+            this.tree.push(new_node);
+        }
+        this.render();
+    };
+
+    /***
+	 * remove a node
+     * @param node_id
+     */
+    Tree.prototype.removeNode = function (node_id) {
+        var target_node = this.nodes[node_id];
+        var parent_node = this.getParent(target_node);
+        var parent_nodes = parent_node ? parent_node.nodes : this.tree;
+        parent_nodes.splice(parent_nodes.indexOf(target_node), 1);
+        target_node.deleted = true;
+        if (parent_nodes.length === 0) {
+            parent_node.nodes = null;
+        }
+        this.render()
     };
 
 	var logError = function (message) {
