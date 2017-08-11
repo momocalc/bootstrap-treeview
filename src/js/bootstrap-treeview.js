@@ -1415,7 +1415,7 @@
         if (parent_nodes.length === 0) {
             parent_node.nodes = null;
         }
-        this.render()
+        this.render();
     };
 
 	var logError = function (message) {
