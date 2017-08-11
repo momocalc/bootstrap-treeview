@@ -1366,7 +1366,7 @@
         if (parent_id !== undefined) {
             var parent = this.nodes[parent_id];
         }
-        this.setInitialStates({nodes: new_nodes}, 0);
+        this.setInitialStates({nodeId: parent_id, nodes: new_nodes}, 0);
         if (parent) {
             if (!parent.nodes) {
                 parent.nodes = new_nodes;
