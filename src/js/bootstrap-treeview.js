@@ -654,9 +654,7 @@
                         //typeof (this.options.onNodeChecked) === 'function'
                         if (typeof val.action === 'function') {
                             link.click({
-                                node_text: node.text, node_key: node.key,
-                                item_text: val.text, item_key: val.key
-                            }, val.action);
+                                item_text: val.text, item_key: val.key, node:node }, val.action);
                         }
                         var item = $(_this.template.dd_li).append(link);
                         if (val.class) {
