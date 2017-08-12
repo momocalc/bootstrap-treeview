@@ -1390,7 +1390,7 @@
         var parent_nodes = parent_node ? parent_node.nodes : this.tree;
         parent_nodes.splice(parent_nodes.indexOf(target_node), 1);
         target_node.removed = true;
-        if (parent_nodes.length === 0) {
+        if (parent_node && parent_nodes.length === 0) {
             parent_node.nodes = null;
         }
         this.render();
